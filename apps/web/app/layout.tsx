@@ -1,5 +1,7 @@
+import React from "react";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+
 import "./globals.css";
 
 const geistSans = localFont({
@@ -18,9 +20,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<React.PropsWithChildren>) {
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
