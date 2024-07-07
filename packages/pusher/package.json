@@ -6,8 +6,8 @@
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "dev": "tsup src --dts --format cjs,esm --watch",
-    "build": "tsup src --format cjs,esm --dts",
+    "dev": "tsup --watch",
+    "build": "tsup",
     "test": "jest"
   },
   "files": [
