@@ -1,4 +1,4 @@
-name: Deploy
+name: Test
 
 on:
   pull_request:
@@ -20,8 +20,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Use pnpm
-        run: corepack use pnpm@latest
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 8
       - name: Install dependencies
         run: pnpm install
       - name: Run tests
