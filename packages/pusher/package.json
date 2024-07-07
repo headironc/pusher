@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "tsup src --dts --format cjs,esm --watch",
     "build": "tsup src --format cjs,esm --dts",
-    "test": "jest --detectOpenHandles"
+    "test": "jest"
   },
   "files": [
     "dist/**",
