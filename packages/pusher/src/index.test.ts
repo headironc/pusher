@@ -20,6 +20,15 @@ it("should create a new instance of Pusher", () => {
   pusher.close();
 });
 
+it("should throw an error if the URI is invalid", () => {
+  const instantiate = () =>
+    new Pusher("507f191e810c19729de860ea", {
+      uri: "invalid",
+    });
+
+  expect(instantiate).toThrowError("Invalid URL");
+});
+
 describe("connect to the server", () => {
   let server: ReturnType<typeof startServer>;
 
