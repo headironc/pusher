@@ -2,6 +2,7 @@ import { Socket, io } from "socket.io-client";
 import { ObjectId } from "bson";
 
 import { Option } from "~/option";
+import { URL } from "url";
 
 class Pusher {
   private option: Option;
@@ -10,6 +11,14 @@ class Pusher {
   constructor(key: string, option?: Option) {
     if (!ObjectId.isValid(key)) {
       throw new Error("Invalid key");
+    }
+
+    if (option?.uri) {
+      try {
+        new URL(option.uri);
+      } catch (error) {
+        throw new Error("Invalid URL");
+      }
     }
 
     this.option = option || {};
