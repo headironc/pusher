@@ -63,6 +63,20 @@ describe("connect to the server", () => {
       done();
     });
   });
+
+  it("can disconnect from the server", (done) => {
+    const pusher = new Pusher("507f191e810c19729de860ea", {
+      uri: "http://localhost:4000",
+    });
+
+    pusher.on("connection", (message) => {
+      pusher.on("disconnect", () => {
+        done();
+      });
+
+      pusher.close();
+    });
+  });
 });
 
 // 构建一个socket.io的服务端用于测试
