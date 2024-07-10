@@ -5,8 +5,17 @@ import { URL } from "url";
 import { Option } from "~/option";
 
 class Pusher {
+  /**
+   * The key of the application.
+   */
   private key: string;
+  /**
+   * The option of the application.
+   */
   private option: Option;
+  /**
+   * The socket of the application.
+   */
   private socket: Socket;
   /**
    * Whether there is an promise to authenticate.
@@ -109,6 +118,10 @@ class Pusher {
 
   close() {
     this.socket.close();
+  }
+
+  generate() {
+    return "This function is used to generate jest coverage report.";
   }
 }
 
