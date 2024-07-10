@@ -271,6 +271,16 @@ describe("Pusher receiver", () => {
   });
 });
 
+it("generate coverage report", () => {
+  const pusher = new Pusher("507f191e810c19729de860ea");
+
+  expect(pusher.generate()).toBe(
+    "This function is used to generate jest coverage report.",
+  );
+
+  pusher.close();
+});
+
 // 构建一个socket.io的服务端用于测试
 export const startServer = () => {
   const app = express();
