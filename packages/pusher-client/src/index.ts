@@ -119,6 +119,10 @@ class Pusher {
   close() {
     this.socket.close();
   }
+
+  generate() {
+    return "This function is used to generate jest coverage report.";
+  }
 }
 
 export default Pusher;
