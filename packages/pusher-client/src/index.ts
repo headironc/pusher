@@ -5,6 +5,7 @@ import { URL } from "url";
 import { Option } from "~/option";
 
 class Pusher {
+  private key: string;
   private option: Option;
   private socket: Socket;
   /**
@@ -21,6 +22,8 @@ class Pusher {
       throw new Error("Invalid key");
     }
 
+    this.key = key;
+
     const { uri, authenticate, ...rest } = option || {};
 
     if (uri) {
@@ -32,7 +35,7 @@ class Pusher {
     }
 
     this.option = option || {};
-    this.socket = uri ? io(uri, rest) : io(rest);
+    this.socket = uri ? io(uri + `/${this.key}`, rest) : io(this.key, rest);
   }
 
   socketId() {
