@@ -1,7 +1,7 @@
 {
-  "name": "@headiron/pusher",
+  "name": "@headiron/pusher-client",
   "version": "0.0.1",
-  "description": "The client library supports Node.js and the browser for a platform similar to Pusher.",
+  "description": "The client library supports Node.js and browser for a platform similar to Pusher.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -19,6 +19,7 @@
   "author": "Archer Leung",
   "license": "MIT",
   "dependencies": {
+    "axios": "^1.7.2",
     "bson": "^6.8.0",
     "socket.io-client": "^4.7.5"
   },
