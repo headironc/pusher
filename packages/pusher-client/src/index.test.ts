@@ -134,18 +134,16 @@ describe("connect to the server", () => {
     });
   });
 
-  it("can connect to the server", (done) => {
+  it("can connect to the server", () => {
     const pusher = new Pusher("507f191e810c19729de860ea", {
-      uri: "http://localhost:4000",
+      uri: "ws://localhost:4000",
     });
 
     pusher.on("connection", (message) => {
-      pusher.close();
-
       expect(message).toBe("connected");
-
-      done();
     });
+
+    pusher.close();
   });
 
   /**
@@ -174,18 +172,21 @@ describe("connect to the server", () => {
     pusher.close();
   });
 
-  it("can disconnect from the server", (done) => {
+  it("can disconnect from the server", () => {
     const pusher = new Pusher("507f191e810c19729de860ea", {
       uri: "http://localhost:4000",
     });
 
     pusher.on("connection", (message) => {
-      pusher.on("disconnect", () => {
-        done();
-      });
+      console.log("connected", message);
+      pusher.on("disconnect", (reason) => {
+        console.log("disconnected", reason);
 
-      pusher.close();
+        expect(reason).toBe("client namespace disconnect");
+      });
     });
+
+    pusher.close();
   });
 
   it("can authenticate with the server", async () => {
@@ -207,6 +208,69 @@ describe("connect to the server", () => {
   });
 });
 
+describe("Pusher receiver", () => {
+  /**
+   * test pusher receiver
+   */
+  it("can receive an event from the client", () => {
+    const app = express();
+    const httpServer = createServer(app);
+    const io = new Server(httpServer, {
+      /* options */
+    });
+
+    io.of(/^\/dynamic-\d+$/).on("connection", (socket) => {
+      socket.on("pusher:login", ({ token, account }) => {
+        expect(token).toBe("token");
+        expect(account).toBe(JSON.stringify({ id: socket.id }));
+      });
+    });
+
+    const server = httpServer.listen(4000);
+
+    const pusher = new Pusher("507f191e810c19729de860ea", {
+      uri: "http://localhost:4000",
+    });
+
+    pusher.emit("pusher:login", {
+      token: "token",
+      account: JSON.stringify({ id: pusher.socketId }),
+    });
+
+    pusher.close();
+    server.close();
+  });
+
+  /**
+   * test pusher get socket id
+   */
+  it("can get the socket id", () => {
+    const app = express();
+    const httpServer = createServer(app);
+
+    const io = new Server(httpServer, {
+      /* options */
+    });
+
+    io.of(/^\/dynamic-\d+$/).on("connection", (socket) => {
+      socket.on("pusher:socket-id", (socketId) => {
+        expect(socketId).toBe(socket.id);
+      });
+    });
+
+    const server = httpServer.listen(4000);
+
+    const pusher = new Pusher("507f191e810c19729de860ea", {
+      uri: "http://localhost:4000",
+    });
+
+    pusher.emit("pusher:socket-id", pusher.socketId());
+
+    pusher.close();
+    server.close();
+  });
+});
+
 // 构建一个socket.io的服务端用于测试
 export const startServer = () => {
   const app = express();
@@ -215,7 +279,11 @@ export const startServer = () => {
     /* options */
   });
 
-  io.on("connection", (socket) => {
+  io.of(/^\/dynamic-\d+$/).on("connection", (socket) => {
+    const key = socket.nsp;
+
+    console.log("connected to", key);
+
     socket.emit("connection", "connected");
 
     socket.on("pusher:login", ({ token, account }) => {
@@ -269,66 +337,3 @@ export const startServer = () => {
 
   return httpServer.listen(4000);
 };
-
-describe("Pusher receiver", () => {
-  /**
-   * test pusher receiver
-   */
-  it("can receive an event from the client", () => {
-    const app = express();
-    const httpServer = createServer(app);
-    const io = new Server(httpServer, {
-      /* options */
-    });
-
-    io.on("connection", (socket) => {
-      socket.on("pusher:login", ({ token, account }) => {
-        expect(token).toBe("token");
-        expect(account).toBe(JSON.stringify({ id: socket.id }));
-      });
-    });
-
-    const server = httpServer.listen(4000);
-
-    const pusher = new Pusher("507f191e810c19729de860ea", {
-      uri: "http://localhost:4000",
-    });
-
-    pusher.emit("pusher:login", {
-      token: "token",
-      account: JSON.stringify({ id: pusher.socketId }),
-    });
-
-    pusher.close();
-    server.close();
-  });
-
-  /**
-   * test pusher get socket id
-   */
-  it("can get the socket id", () => {
-    const app = express();
-    const httpServer = createServer(app);
-
-    const io = new Server(httpServer, {
-      /* options */
-    });
-
-    io.on("connection", (socket) => {
-      socket.on("pusher:socket-id", (socketId) => {
-        expect(socketId).toBe(socket.id);
-      });
-    });
-
-    const server = httpServer.listen(4000);
-
-    const pusher = new Pusher("507f191e810c19729de860ea", {
-      uri: "http://localhost:4000",
-    });
-
-    pusher.emit("pusher:socket-id", pusher.socketId());
-
-    pusher.close();
-    server.close();
-  });
-});
