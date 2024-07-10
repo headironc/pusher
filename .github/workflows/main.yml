@@ -29,4 +29,4 @@ jobs:
         uses: codecov/codecov-action@v4.0.1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./packages/*/coverage/lcov.info
+          files: ./packages/*/coverage/lcov.info,./packages/*/coverage-final.json,./packages/*/coverage/clover.xml
