@@ -42,7 +42,9 @@ class Pusher {
     return this.socket.id;
   }
 
-  test() {}
+  test() {
+    return "test";
+  }
 
   async login() {
     let endpoint = "/api/v1/accounts/authenticate";
